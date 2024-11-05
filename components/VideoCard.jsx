@@ -2,6 +2,7 @@ import { View, Text, Image } from 'react-native'
 import { icons } from '../constants'
 import { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
+import { ResizeMode, Video } from 'expo-av'
 
 const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avatar } } }) => {
   const [play, setPlay] = useState(false)
@@ -39,7 +40,20 @@ const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avat
       </View>
 
       {play ? (
-        <Text className='text-white'>Playing</Text>
+        <View className='w-full h-60 rounded-xl mt-3'>
+          <Video
+            source={{ uri: video }}
+            style={{ width: '100%', height: '100%' }}
+            resizeMode={ResizeMode.CONTAIN}
+            useNativeControls
+            shouldPlay
+            onPlaybackStatusUpdate={(status) => {
+              if (status.didJustFinish) {
+                setPlay(false)
+              }
+            }}
+          />
+        </View>
       ) : (
         <TouchableOpacity
           className='w-full h-60 rounded-xl mt-3 relative justify-center items-center'
