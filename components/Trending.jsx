@@ -11,13 +11,13 @@ const zoomIn = {
     scale: 0.9
   },
   1: {
-    scale: 1.1
+    scale: 1
   }
 }
 
 const zoomOut = {
   0: {
-    scale: 1.1
+    scale: 1
   },
   1: {
     scale: 0.9
@@ -29,7 +29,7 @@ const TrendingItem = ({ activeItem, item }) => {
 
   return (
     <Animatable.View
-      className='mr-5'
+      className='ml-2'
       animation={activeItem === item.$id ? zoomIn : zoomOut}
       duration={500}
     >
