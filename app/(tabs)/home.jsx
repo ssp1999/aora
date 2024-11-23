@@ -6,7 +6,7 @@ import Trending from '../../components/Trending'
 import EmptyState from '../../components/EmptyState'
 import { useState } from 'react'
 import { getAllPosts, getLatestPosts } from '../../lib/appwrite'
-import useAppwrite from '../../lib/useAppwrite'
+import useAppwrite from '../../hooks/useAppwrite'
 import VideoCard from '../../components/VideoCard'
 import { useGlobalContext } from '../../context/GlobalProvider'
 

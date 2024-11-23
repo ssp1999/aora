@@ -4,7 +4,7 @@ import SearchInput from '../../components/SearchInput'
 import EmptyState from '../../components/EmptyState'
 import { useEffect } from 'react'
 import { searchPosts } from '../../lib/appwrite'
-import useAppwrite from '../../lib/useAppwrite'
+import useAppwrite from '../../hooks/useAppwrite'
 import VideoCard from '../../components/VideoCard'
 import { useLocalSearchParams } from 'expo-router'
 
