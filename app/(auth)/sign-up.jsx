@@ -55,14 +55,14 @@ const SignUp = () => {
           <FormField
             title='Username'
             value={form.username}
-            handleChangeText={(e) => setForm({ ...form, username: e })}
+            onChangeText={(e) => setForm({ ...form, username: e })}
             otherStyles='mt-10'
           />
 
           <FormField
             title='Email'
             value={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e })}
+            onChangeText={(e) => setForm({ ...form, email: e })}
             otherStyles='mt-7'
             keyboardType='email-address'
           />
@@ -70,7 +70,7 @@ const SignUp = () => {
           <FormField
             title='Password'
             value={form.password}
-            handleChangeText={(e) => setForm({ ...form, password: e })}
+            onChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles='mt-7'
           />
 

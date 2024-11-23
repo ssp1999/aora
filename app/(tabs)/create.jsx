@@ -1,53 +1,35 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-native'
+import { View, Text, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import FormField from '../../components/FormField'
 import { useState } from 'react'
 import CustomButton from '../../components/CustomButton'
-import { ResizeMode, Video } from 'expo-av'
-import { icons } from '../../constants'
-import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import { createVideo } from '../../lib/appwrite'
 import { useGlobalContext } from '../../context/GlobalProvider'
+import { Formik } from 'formik'
+import { validation } from '../../helpers/validation'
+import VideoUploadField from '../../components/VideoUploadField'
+import ThumbnailImageField from '../../components/ThumbnailImageField'
+import { usePicker } from '../../hooks/usePicker'
 
 const Create = () => {
   const { user } = useGlobalContext()
   const [uploading, setUploading] = useState(false)
-  const [form, setForm] = useState({
+  const { file: image, openPicker: openPickerImage } = usePicker(['images'])
+  const { file: video, openPicker: openPickerVideo } = usePicker(['videos'])
+  const form = {
     title: '',
     video: null,
     thumbnail: null,
     prompt: ''
-  })
-
-  const openPicker = async (selectType) => {
-    const result = await ImagePicker.
-      launchImageLibraryAsync({
-        mediaTypes: selectType === 'image' ? ImagePicker.MediaTypeOptions.Images : ImagePicker.MediaTypeOptions.Videos,
-        aspect: [4, 3],
-        quality: 1
-      })
-
-    if (!result.canceled) {
-      if (selectType === 'image') {
-        setForm({ ...form, thumbnail: result.assets[0] })
-      }
-
-      if (selectType === 'video') {
-        setForm({ ...form, video: result.assets[0] })
-      }
-    }
   }
 
-  const submit = async () => {
-    if (!form.title || !form.video || !form.thumbnail || !form.prompt) {
-      return Alert.alert('Please fill in all the fields')
-    }
+  const handleSubmit = async (values, { resetForm }) => {
     setUploading(true)
 
     try {
       await createVideo({
-        ...form,
+        ...values,
         userId: user.$id
       })
 
@@ -56,15 +38,9 @@ const Create = () => {
     } catch (error) {
       Alert.alert('Error', error.message)
     } finally {
-      setForm({
-        title: '',
-        video: null,
-        thumbnail: null,
-        prompt: ''
-      })
+      resetForm()
       setUploading(false)
     }
-
   }
 
   return (
@@ -74,86 +50,56 @@ const Create = () => {
           Upload Video
         </Text>
 
-        <FormField
-          title='Video Title'
-          value={form.title}
-          placeholder='Give your video a catch title...'
-          handleChangeText={(e) => setForm({ ...form, title: e })}
-          otherStyles='mt-10'
-        />
-
-        <View className='mt-7 space-y-2'>
-          <Text className='text-base text-gray-100 font-pmedium'>
-            Upload video
-          </Text>
-
-          <TouchableOpacity onPress={() => openPicker('video')}>
-            {form.video ? (
-              <View className='w-full h-64 rounded-2xl'>
-                <Video
-                  source={{ uri: form.video.uri }}
-                  style={{ width: '100%', height: '100%' }}
-                  resizeMode={ResizeMode.COVER}
-                />
-              </View>
-            ) : (
-              <View className='w-full h-40 px-4 bg-black-100 rounded-2xl justify-center items-center' >
-                <View className='w-14 h-14 border border-dashed border-secondary-100 justify-center items-center'>
-                  <Image
-                    source={icons.upload}
-                    resizeMode='contain'
-                    className='w-1/2 h-1/2'
-                  />
-                </View>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
-
-        <View className='mt-7 space-y-2'>
-          <Text className='text-base text-gray-100 font-pmedium'>
-            Thumbnail Image
-          </Text>
-
-          <TouchableOpacity onPress={() => openPicker('image')}>
-            {form.thumbnail ? (
-              <Image
-                source={{ uri: form.thumbnail.uri }}
-                resizeMode='cover'
-                className='w-full h-64 rounded-2xl'
+        <Formik
+          initialValues={form}
+          validationSchema={validation}
+          onSubmit={handleSubmit}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, setFieldValue }) => (
+            <View>
+              <FormField
+                title='Video Title'
+                placeholder='Give your video a catch title...'
+                otherStyles='mt-10'
+                value={values.title}
+                onChangeText={handleChange('title')}
+                onBlur={handleBlur('title')}
+                error={errors.title}
               />
-            ) : (
-              <View
-                className='w-full h-16 px-4 bg-black-100 rounded-2xl justify-center items-center border-2 border-black-200 flex-row space-x-2'
-              >
-                <Image
-                  source={icons.upload}
-                  resizeMode='contain'
-                  className='w-5 h-5'
-                />
 
-                <Text className='text-sm text-gray-100 font-pmedium ml-2'>
-                  Choose a file
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        </View>
+              <VideoUploadField
+                video={video}
+                error={errors.video}
+                handlePicker={openPickerVideo}
+                setFieldValue={setFieldValue}
+              />
 
-        <FormField
-          title='AI Prompt'
-          value={form.prompt}
-          placeholder='The prompt you used to create this video'
-          handleChangeText={(e) => setForm({ ...form, prompt: e })}
-          otherStyles='mt-7'
-        />
+              <ThumbnailImageField
+                image={image}
+                error={errors.thumbnail}
+                handlePicker={openPickerImage}
+                setFieldValue={setFieldValue}
+              />
 
-        <CustomButton
-          title='Submit & Publish'
-          handlePress={submit}
-          isLoading={uploading}
-          containerStyles='mt-7'
-        />
+              <FormField
+                title='AI Prompt'
+                placeholder='The prompt you used to create this video'
+                otherStyles='mt-7'
+                value={values.prompt}
+                onChangeText={handleChange('prompt')}
+                onBlur={handleBlur('prompt')}
+                error={errors.prompt}
+              />
+
+              <CustomButton
+                title='Submit & Publish'
+                handlePress={handleSubmit}
+                isLoading={uploading}
+                containerStyles='mt-7'
+              />
+            </View>
+          )}
+        </Formik>
       </ScrollView>
     </SafeAreaView>
   )
