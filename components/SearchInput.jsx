@@ -31,6 +31,8 @@ const SearchInput = ({ initialQuery }) => {
           } else {
             router.push(`/search/${query}`)
           }
+
+          setQuery('')
         }}
       >
         <Image

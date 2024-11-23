@@ -76,8 +76,8 @@ const Profile = () => {
         )}
         ListEmptyComponent={() => (
           <EmptyState
-            title='No videos found'
-            subtitle='No videos found for this search query'
+            title="No videos uploaded yet"
+            subtitle="Let's get started and share your creativity!"
           />
         )}
       />
