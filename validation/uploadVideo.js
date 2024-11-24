@@ -4,7 +4,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024
 const SUPPORTED_VIDEO_FORMATS = ["video/mp4"]
 const SUPPORTED_IMAGE_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"]
 
-export const validation = Yup.object().shape({
+export const uploadVideoSchema = Yup.object().shape({
   title: Yup.string().required('Required title').min(4, 'At least 4 characters'),
   video: Yup.object()
     .required("Required video")

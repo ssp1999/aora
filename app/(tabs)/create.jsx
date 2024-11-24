@@ -7,14 +7,14 @@ import { router } from 'expo-router'
 import { createVideo } from '../../lib/appwrite'
 import { useGlobalContext } from '../../context/GlobalProvider'
 import { Formik } from 'formik'
-import { validation } from '../../helpers/validation'
 import VideoUploadField from '../../components/VideoUploadField'
 import ThumbnailImageField from '../../components/ThumbnailImageField'
 import { usePicker } from '../../hooks/usePicker'
+import { uploadVideoSchema } from '../../validation/uploadVideo'
 
 const Create = () => {
   const { user } = useGlobalContext()
-  const [uploading, setUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
   const { file: image, openPicker: openPickerImage } = usePicker(['images'])
   const { file: video, openPicker: openPickerVideo } = usePicker(['videos'])
   const form = {
@@ -25,7 +25,7 @@ const Create = () => {
   }
 
   const handleSubmit = async (values, { resetForm }) => {
-    setUploading(true)
+    setIsUploading(true)
 
     try {
       await createVideo({
@@ -39,7 +39,7 @@ const Create = () => {
       Alert.alert('Error', error.message)
     } finally {
       resetForm()
-      setUploading(false)
+      setIsUploading(false)
     }
   }
 
@@ -52,7 +52,7 @@ const Create = () => {
 
         <Formik
           initialValues={form}
-          validationSchema={validation}
+          validationSchema={uploadVideoSchema}
           onSubmit={handleSubmit}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, setFieldValue }) => (
@@ -94,7 +94,7 @@ const Create = () => {
               <CustomButton
                 title='Submit & Publish'
                 handlePress={handleSubmit}
-                isLoading={uploading}
+                isLoading={isUploading}
                 containerStyles='mt-7'
               />
             </View>

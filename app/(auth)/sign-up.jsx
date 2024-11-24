@@ -7,26 +7,24 @@ import { Link, router } from 'expo-router'
 import { useState } from 'react'
 import { createUser } from '../../lib/appwrite'
 import { useGlobalContext } from '../../context/GlobalProvider'
+import { Formik } from 'formik'
+import { signUpSchema } from '../../validation/signUp'
 
 const SignUp = () => {
-  const [form, setForm] = useState({
+  const form = {
     username: '',
     email: '',
-    password: '',
-  })
+    password: ''
+  }
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { setUser, setIsLoggedIn } = useGlobalContext()
 
-  const submit = async () => {
-    if (!form.username || !form.email || !form.password) {
-      Alert.alert('Error', 'Please fill all the fields')
-    }
-
+  const handleSubmit = async (values, { resetForm }) => {
     setIsSubmitting(true)
 
     try {
-      const result = await createUser(form.email, form.password, form.username)
+      const result = await createUser(values.email, values.password, values.username)
       setUser(result)
       setIsLoggedIn(true)
 
@@ -34,6 +32,7 @@ const SignUp = () => {
     } catch (error) {
       Alert.alert('Error', error.message)
     } finally {
+      resetForm()
       setIsSubmitting(false)
     }
   }
@@ -52,34 +51,51 @@ const SignUp = () => {
             Sign up to Aora
           </Text>
 
-          <FormField
-            title='Username'
-            value={form.username}
-            onChangeText={(e) => setForm({ ...form, username: e })}
-            otherStyles='mt-10'
-          />
+          <Formik
+            initialValues={form}
+            validationSchema={signUpSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+              <View>
+                <FormField
+                  title='Username'
+                  otherStyles='mt-10'
+                  value={values.username}
+                  onChangeText={handleChange('username')}
+                  onBlur={handleBlur('username')}
+                  error={errors.username}
+                />
 
-          <FormField
-            title='Email'
-            value={form.email}
-            onChangeText={(e) => setForm({ ...form, email: e })}
-            otherStyles='mt-7'
-            keyboardType='email-address'
-          />
+                <FormField
+                  title='Email'
+                  otherStyles='mt-7'
+                  keyboardType='email-address'
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  error={errors.email}
+                />
 
-          <FormField
-            title='Password'
-            value={form.password}
-            onChangeText={(e) => setForm({ ...form, password: e })}
-            otherStyles='mt-7'
-          />
+                <FormField
+                  title='Password'
+                  otherStyles='mt-7'
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  error={errors.password}
+                  secureTextEntry
+                />
 
-          <CustomButton
-            title='Sign Up'
-            handlePress={submit}
-            containerStyles='mt-7'
-            isLoading={isSubmitting}
-          />
+                <CustomButton
+                  title='Sign Up'
+                  handlePress={handleSubmit}
+                  containerStyles='mt-7'
+                  isLoading={isSubmitting}
+                />
+              </View>
+            )}
+          </Formik>
 
           <View className='justify-center pt-5 flex-row'>
             <Text className='text-lg text-gray-100 font-pregular'>
