@@ -56,7 +56,7 @@ const SignUp = () => {
             validationSchema={signUpSchema}
             onSubmit={handleSubmit}
           >
-            {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <View>
                 <FormField
                   title='Username'
@@ -65,6 +65,7 @@ const SignUp = () => {
                   onChangeText={handleChange('username')}
                   onBlur={handleBlur('username')}
                   error={errors.username}
+                  touched={touched.username}
                 />
 
                 <FormField
@@ -75,6 +76,7 @@ const SignUp = () => {
                   onChangeText={handleChange('email')}
                   onBlur={handleBlur('email')}
                   error={errors.email}
+                  touched={touched.email}
                 />
 
                 <FormField
@@ -85,6 +87,7 @@ const SignUp = () => {
                   onBlur={handleBlur('password')}
                   error={errors.password}
                   secureTextEntry
+                  touched={touched.password}
                 />
 
                 <CustomButton

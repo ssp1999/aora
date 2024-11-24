@@ -1,10 +1,12 @@
 import { icons } from '../constants'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 
-const ThumbnailImageField = ({ image, error, handlePicker, setFieldValue }) => {
+const ThumbnailImageField = ({ image, error, handlePicker, setFieldValue, setFieldTouched, touched }) => {
   const onPress = async () => {
     const file = await handlePicker()
     setFieldValue('thumbnail', file || null)
+    setFieldTouched('thumbnail', true)
+    if (file) setFieldTouched('thumbnail', false)
   }
 
   return (
@@ -18,11 +20,11 @@ const ThumbnailImageField = ({ image, error, handlePicker, setFieldValue }) => {
           <Image
             source={{ uri: image.uri }}
             resizeMode='cover'
-            className='w-full h-64 rounded-2xl'
+            className={`w-full h-64 rounded-2xl ${touched && error ? 'border-2 border-red-400' : ''}`}
           />
         ) : (
           <View
-            className={`w-full h-16 px-4 bg-black-100 rounded-2xl justify-center items-center border-2 ${error ? 'border-red-400' : 'border-black-200'} flex-row space-x-2`}
+            className={`w-full h-16 px-4 bg-black-100 rounded-2xl justify-center items-center border-2 ${touched && error ? 'border-red-400' : 'border-black-200'} flex-row space-x-2`}
           >
             <Image
               source={icons.upload}
@@ -35,7 +37,9 @@ const ThumbnailImageField = ({ image, error, handlePicker, setFieldValue }) => {
             </Text>
           </View>
         )}
-        {error && <Text className='text-red-400 text-sm mt-1 ml-4'>{error}</Text>}
+        {touched && error ? (
+          <Text className='text-red-400 text-sm mt-1 ml-4'>{error}</Text>
+        ) : null}
       </TouchableOpacity>
     </View>
   )

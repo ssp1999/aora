@@ -55,7 +55,7 @@ const Create = () => {
           validationSchema={uploadVideoSchema}
           onSubmit={handleSubmit}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, setFieldValue }) => (
+          {({ handleChange, handleBlur, handleSubmit, values, errors, setFieldValue, touched, setFieldTouched }) => (
             <View>
               <FormField
                 title='Video Title'
@@ -65,6 +65,7 @@ const Create = () => {
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 error={errors.title}
+                touched={touched.title}
               />
 
               <VideoUploadField
@@ -72,6 +73,8 @@ const Create = () => {
                 error={errors.video}
                 handlePicker={openPickerVideo}
                 setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
+                touched={touched.video}
               />
 
               <ThumbnailImageField
@@ -79,6 +82,8 @@ const Create = () => {
                 error={errors.thumbnail}
                 handlePicker={openPickerImage}
                 setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
+                touched={touched.thumbnail}
               />
 
               <FormField
@@ -89,6 +94,7 @@ const Create = () => {
                 onChangeText={handleChange('prompt')}
                 onBlur={handleBlur('prompt')}
                 error={errors.prompt}
+                touched={touched.prompt}
               />
 
               <CustomButton
