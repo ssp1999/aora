@@ -4,16 +4,16 @@ import { images } from '../../constants'
 import SearchInput from '../../components/SearchInput'
 import Trending from '../../components/Trending'
 import EmptyState from '../../components/EmptyState'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getAllPosts, getLatestPosts } from '../../lib/appwrite'
 import useAppwrite from '../../hooks/useAppwrite'
 import VideoCard from '../../components/VideoCard'
 import { useGlobalContext } from '../../context/GlobalProvider'
 
 const Home = () => {
-  const { user } = useGlobalContext()
+  const { user, shouldRefetch, setShouldRefetch } = useGlobalContext()
   const { data: posts, refetch } = useAppwrite(getAllPosts)
-  const { data: latestPosts } = useAppwrite(getLatestPosts)
+  const { data: latestPosts, refetch: refetchLatestPosts } = useAppwrite(getLatestPosts)
   const [refreshing, setRefreshing] = useState(false)
 
   const onRefresh = async () => {
@@ -21,8 +21,18 @@ const Home = () => {
 
     //recall videos
     await refetch()
+    await refetchLatestPosts()
     setRefreshing(false)
   }
+
+  useEffect(() => {
+    if (shouldRefetch) {
+      refetch()
+      refetchLatestPosts()
+      setShouldRefetch(false)
+    }
+  }, [shouldRefetch])
+
 
   return (
     <SafeAreaView className='bg-primary h-full'>

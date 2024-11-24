@@ -13,7 +13,7 @@ import { usePicker } from '../../hooks/usePicker'
 import { uploadVideoSchema } from '../../validation/uploadVideo'
 
 const Create = () => {
-  const { user } = useGlobalContext()
+  const { user, setShouldRefetch } = useGlobalContext()
   const [isUploading, setIsUploading] = useState(false)
   const { file: image, openPicker: openPickerImage } = usePicker(['images'])
   const { file: video, openPicker: openPickerVideo } = usePicker(['videos'])
@@ -34,6 +34,7 @@ const Create = () => {
       })
 
       Alert.alert('Success', 'Post uploaded successfully')
+      setShouldRefetch(true)
       router.push('/home')
     } catch (error) {
       Alert.alert('Error', error.message)
