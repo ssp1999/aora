@@ -5,8 +5,7 @@ const ThumbnailImageField = ({ image, error, handlePicker, setFieldValue, setFie
   const onPress = async () => {
     const file = await handlePicker()
     setFieldValue('thumbnail', file || null)
-    setFieldTouched('thumbnail', true)
-    if (file) setFieldTouched('thumbnail', false)
+    if (!file) setFieldTouched('thumbnail', true)
   }
 
   return (

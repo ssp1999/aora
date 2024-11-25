@@ -7,8 +7,7 @@ const VideoUploadField = ({ video, error, handlePicker, setFieldValue, setFieldT
   const onPress = async () => {
     const file = await handlePicker()
     setFieldValue('video', file || null)
-    setFieldTouched('video', true)
-    if (file) setFieldTouched('video', false)
+    if (!file) setFieldTouched('video', true)
   }
 
   const videoRef = useRef(null)
