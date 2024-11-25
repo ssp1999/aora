@@ -1,23 +1,23 @@
-import { useCallback, useState } from 'react'
-import { Image, View } from 'react-native'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Image } from 'react-native'
 import { ImageBackground, TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native'
 import * as Animatable from 'react-native-animatable'
 import { icons } from '../constants'
-import { Video, ResizeMode } from 'expo-av'
+import { useVideoPlayer, VideoView } from 'expo-video'
 
 const zoomIn = {
   0: {
     scale: 0.9
   },
   1: {
-    scale: 1
+    scale: 1.1
   }
 }
 
 const zoomOut = {
   0: {
-    scale: 1
+    scale: 1.1
   },
   1: {
     scale: 0.9
@@ -25,7 +25,28 @@ const zoomOut = {
 }
 
 const TrendingItem = ({ activeItem, item }) => {
-  const [play, setPlay] = useState(false)
+  const videoRef = useRef(null)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const player = useVideoPlayer(item.video)
+
+  const startVideo = useCallback(() => {
+    setIsPlaying(true)
+    player.loop = true
+    player.replay()
+    player.play()
+  })
+
+  useEffect(() => {
+    if (isPlaying && videoRef.current) {
+      videoRef.current.enterFullscreen()
+    }
+  }, [isPlaying])
+
+  const handleOnFullscreenExit = useCallback(() => {
+    player.replay()
+    player.pause()
+    setIsPlaying(false)
+  })
 
   return (
     <Animatable.View
@@ -33,26 +54,20 @@ const TrendingItem = ({ activeItem, item }) => {
       animation={activeItem === item.$id ? zoomIn : zoomOut}
       duration={500}
     >
-      {play ? (
-        <View className='w-52 h-72 rounded-[35px] mt-3 bg-white/10'>
-          <Video
-            source={{ uri: item.video }}
-            style={{ width: '100%', height: '100%' }}
-            resizeMode={ResizeMode.CONTAIN}
-            useNativeControls
-            shouldPlay
-            onPlaybackStatusUpdate={(status) => {
-              if (status.didJustFinish) {
-                setPlay(false)
-              }
-            }}
-          />
-        </View>
+      {isPlaying ? (
+        <VideoView
+          ref={videoRef}
+          style={{ width: '100%', height: '100%' }}
+          player={player}
+          contentFit
+          allowsFullscreen
+          onFullscreenExit={handleOnFullscreenExit}
+        />
       ) : (
         <TouchableOpacity
           className='relative justify-center items-center'
           activeOpacity={0.7}
-          onPress={() => setPlay(true)}
+          onPress={startVideo}
         >
           <ImageBackground
             source={{ uri: item.thumbnail }}

@@ -1,11 +1,19 @@
 import { View, Text, Image } from 'react-native'
 import { icons } from '../constants'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
-import { ResizeMode, Video } from 'expo-av'
+import { useVideoPlayer, VideoView } from 'expo-video'
 
 const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avatar } } }) => {
-  const [play, setPlay] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const videoRef = useRef(null)
+  const player = useVideoPlayer(video)
+
+  const startVideo = useCallback(() => {
+    setIsPlaying(true)
+    player.loop = false
+    player.play()
+  })
 
   return (
     <View className='flex-col items-center px-4 mb-14'>
@@ -39,26 +47,21 @@ const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avat
         </View>
       </View>
 
-      {play ? (
+      {isPlaying ? (
         <View className='w-full h-60 rounded-xl mt-3'>
-          <Video
-            source={{ uri: video }}
+          <VideoView
+            ref={videoRef}
             style={{ width: '100%', height: '100%' }}
-            resizeMode={ResizeMode.CONTAIN}
-            useNativeControls
-            shouldPlay
-            onPlaybackStatusUpdate={(status) => {
-              if (status.didJustFinish) {
-                setPlay(false)
-              }
-            }}
+            player={player}
+            contentFit
+            allowsFullscreen
           />
         </View>
       ) : (
         <TouchableOpacity
           className='w-full h-60 rounded-xl mt-3 relative justify-center items-center'
           activeOpacity={0.7}
-          onPress={() => setPlay(true)}
+          onPress={startVideo}
         >
           <Image
             source={{ uri: thumbnail }}

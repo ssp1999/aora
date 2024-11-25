@@ -1,6 +1,7 @@
-import { ResizeMode, Video } from 'expo-av'
 import { Text, TouchableOpacity, View, Image } from 'react-native'
 import { icons } from '../constants'
+import { useVideoPlayer, VideoView } from 'expo-video'
+import { useEffect, useRef } from 'react'
 
 const VideoUploadField = ({ video, error, handlePicker, setFieldValue, setFieldTouched, touched }) => {
   const onPress = async () => {
@@ -9,6 +10,15 @@ const VideoUploadField = ({ video, error, handlePicker, setFieldValue, setFieldT
     setFieldTouched('video', true)
     if (file) setFieldTouched('video', false)
   }
+
+  const videoRef = useRef(null)
+  const player = useVideoPlayer(video)
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playing = false
+    }
+  }, [videoRef])
 
   return (
     <View className='mt-7 space-y-2'>
@@ -19,10 +29,11 @@ const VideoUploadField = ({ video, error, handlePicker, setFieldValue, setFieldT
       <TouchableOpacity onPress={onPress}>
         {video ? (
           <View className={`w-full h-64 rounded-2xl ${touched && error ? 'border-2 border-red-400' : ''}`}>
-            <Video
-              source={{ uri: video.uri }}
+            <VideoView
+              ref={videoRef}
               style={{ width: '100%', height: '100%' }}
-              resizeMode={ResizeMode.COVER}
+              player={player}
+              contentFit
             />
           </View>
         ) : (
