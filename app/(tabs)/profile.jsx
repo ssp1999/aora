@@ -8,10 +8,11 @@ import { useGlobalContext } from '../../context/GlobalProvider'
 import { icons } from '../../constants'
 import InfoBox from '../../components/InfoBox'
 import { router } from 'expo-router'
+import { useEffect } from 'react'
 
 const Profile = () => {
-  const { user, setUser, setIsLoggedIn } = useGlobalContext()
-  const { data: posts } = useAppwrite(() => getUserPosts(user.$id))
+  const { user, setUser, setIsLoggedIn, shouldRefetch, setShouldRefetch } = useGlobalContext()
+  const { data: posts, refetch } = useAppwrite(() => getUserPosts(user.$id))
 
   const logout = async () => {
     await signOut()
@@ -21,6 +22,13 @@ const Profile = () => {
     router.replace('/sign-in')
   }
 
+  useEffect(() => {
+    if (shouldRefetch) {
+      refetch()
+      setShouldRefetch(false)
+    }
+  }, [shouldRefetch])
+
   return (
     <SafeAreaView className='bg-primary h-full'>
       <FlatList
@@ -29,6 +37,7 @@ const Profile = () => {
         renderItem={({ item }) => (
           <VideoCard
             video={item}
+            showActionsMenu={user.$id === item.creator.$id}
           />
         )}
         ListHeaderComponent={() => (

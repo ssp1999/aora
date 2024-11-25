@@ -3,8 +3,9 @@ import { icons } from '../constants'
 import { useCallback, useRef, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useVideoPlayer, VideoView } from 'expo-video'
+import ActionsMenu from './ActionsMenu'
 
-const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avatar } } }) => {
+const VideoCard = ({ video: { $id, title, thumbnail, video, creator: { username, avatar } }, showActionsMenu = false }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const videoRef = useRef(null)
   const player = useVideoPlayer(video)
@@ -38,13 +39,12 @@ const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avat
           </View>
         </View>
 
-        <View className='pt-2'>
-          <Image
-            source={icons.menu}
-            resizeMode='contain'
-            className='w-5 h-5'
+        {showActionsMenu && (
+          <ActionsMenu
+            videoId={$id}
           />
-        </View>
+        )}
+
       </View>
 
       {isPlaying ? (
