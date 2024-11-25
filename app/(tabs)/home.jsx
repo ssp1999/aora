@@ -4,17 +4,19 @@ import { images } from '../../constants'
 import SearchInput from '../../components/SearchInput'
 import Trending from '../../components/Trending'
 import EmptyState from '../../components/EmptyState'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getAllPosts, getLatestPosts } from '../../lib/appwrite'
 import useAppwrite from '../../hooks/useAppwrite'
 import VideoCard from '../../components/VideoCard'
 import { useGlobalContext } from '../../context/GlobalProvider'
+import VideoPlayer from '../../components/VideoPlayer'
 
 const Home = () => {
   const { user, shouldRefetch, setShouldRefetch } = useGlobalContext()
   const { data: posts, refetch } = useAppwrite(getAllPosts)
   const { data: latestPosts, refetch: refetchLatestPosts } = useAppwrite(getLatestPosts)
   const [refreshing, setRefreshing] = useState(false)
+  const videoPlayerRef = useRef(null)
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -36,6 +38,7 @@ const Home = () => {
 
   return (
     <SafeAreaView className='bg-primary h-full'>
+      <VideoPlayer ref={videoPlayerRef}></VideoPlayer>
       <FlatList
         data={posts}
         keyExtractor={(item) => item.$id}
@@ -75,6 +78,7 @@ const Home = () => {
 
               <Trending
                 posts={latestPosts}
+                videoPlayerRef={videoPlayerRef}
               />
             </View>
           </View>

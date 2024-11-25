@@ -24,29 +24,10 @@ const zoomOut = {
   }
 }
 
-const TrendingItem = ({ activeItem, item }) => {
-  const videoRef = useRef(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const player = useVideoPlayer(item.video)
-
+const TrendingItem = ({ activeItem, item, videoPlayerRef }) => {
   const startVideo = useCallback(() => {
-    setIsPlaying(true)
-    player.loop = true
-    player.replay()
-    player.play()
-  })
-
-  useEffect(() => {
-    if (isPlaying && videoRef.current) {
-      videoRef.current.enterFullscreen()
-    }
-  }, [isPlaying])
-
-  const handleOnFullscreenExit = useCallback(() => {
-    player.replay()
-    player.pause()
-    setIsPlaying(false)
-  })
+    videoPlayerRef.current?.openVideoPlayer(item.video)
+  }, [item.video, videoPlayerRef])
 
   return (
     <Animatable.View
@@ -54,39 +35,28 @@ const TrendingItem = ({ activeItem, item }) => {
       animation={activeItem === item.$id ? zoomIn : zoomOut}
       duration={500}
     >
-      {isPlaying ? (
-        <VideoView
-          ref={videoRef}
-          style={{ width: '100%', height: '100%' }}
-          player={player}
-          contentFit
-          allowsFullscreen
-          onFullscreenExit={handleOnFullscreenExit}
+      <TouchableOpacity
+        className='relative justify-center items-center'
+        activeOpacity={0.7}
+        onPress={startVideo}
+      >
+        <ImageBackground
+          source={{ uri: item.thumbnail }}
+          className='w-52 h-72 rounded-[35px] my-5 overflow-hidden shadow-lg shadow-black/40'
+          resizeMode='cover'
         />
-      ) : (
-        <TouchableOpacity
-          className='relative justify-center items-center'
-          activeOpacity={0.7}
-          onPress={startVideo}
-        >
-          <ImageBackground
-            source={{ uri: item.thumbnail }}
-            className='w-52 h-72 rounded-[35px] my-5 overflow-hidden shadow-lg shadow-black/40'
-            resizeMode='cover'
-          />
 
-          <Image
-            source={icons.play}
-            className='w-12 h-12 absolute'
-            resizeMode='contain'
-          />
-        </TouchableOpacity>
-      )}
+        <Image
+          source={icons.play}
+          className='w-12 h-12 absolute'
+          resizeMode='contain'
+        />
+      </TouchableOpacity>
     </Animatable.View>
   )
 }
 
-const Trending = ({ posts }) => {
+const Trending = ({ posts, videoPlayerRef }) => {
   const [activeItem, setActiveItem] = useState(posts[1])
 
   const viewableItemsChanged = useCallback(({ viewableItems }) => {
@@ -103,6 +73,7 @@ const Trending = ({ posts }) => {
         <TrendingItem
           activeItem={activeItem}
           item={item}
+          videoPlayerRef={videoPlayerRef}
         />
       )}
       horizontal
