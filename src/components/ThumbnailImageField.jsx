@@ -1,4 +1,4 @@
-import { icons } from '../constants'
+import { icons } from '@/constants'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 
 const ThumbnailImageField = ({ image, error, handlePicker, setFieldValue, setFieldTouched, touched }) => {

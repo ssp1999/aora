@@ -1,9 +1,9 @@
 import { Alert, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { icons } from '../constants'
+import { icons } from '@/constants'
 import { useActionSheet } from '@expo/react-native-action-sheet'
-import { deletePost } from '../lib/appwrite'
-import { useGlobalContext } from '../context/GlobalProvider'
+import { deletePost } from '@/lib/appwrite'
+import { useGlobalContext } from '@/context/GlobalProvider'
 
 const ActionsMenu = ({ videoId }) => {
   const { showActionSheetWithOptions } = useActionSheet()

@@ -3,7 +3,7 @@ import { Image } from 'react-native'
 import { ImageBackground, TouchableOpacity } from 'react-native'
 import { FlatList } from 'react-native'
 import * as Animatable from 'react-native-animatable'
-import { icons } from '../constants'
+import { icons } from '@/constants'
 import { useVideoPlayer, VideoView } from 'expo-video'
 
 const zoomIn = {

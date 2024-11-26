@@ -1,5 +1,5 @@
 import { View, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
-import { icons } from '../constants'
+import { icons } from '@/constants'
 import { useState } from 'react'
 import { router, usePathname } from 'expo-router'
 

@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View, Image } from 'react-native'
-import { icons } from '../constants'
+import { icons } from '@/constants'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { useEffect, useRef } from 'react'
 

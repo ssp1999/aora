@@ -1,11 +1,11 @@
 import { FlatList, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import SearchInput from '../../components/SearchInput'
-import EmptyState from '../../components/EmptyState'
+import SearchInput from '@/components/SearchInput'
+import EmptyState from '@/components/EmptyState'
 import { useEffect } from 'react'
-import { searchPosts } from '../../lib/appwrite'
-import useAppwrite from '../../hooks/useAppwrite'
-import VideoCard from '../../components/VideoCard'
+import { searchPosts } from '@/lib/appwrite'
+import useAppwrite from '@/hooks/useAppwrite'
+import VideoCard from '@/components/VideoCard'
 import { useLocalSearchParams } from 'expo-router'
 
 const Search = () => {

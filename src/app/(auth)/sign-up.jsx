@@ -1,14 +1,14 @@
 import { View, Text, ScrollView, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { images } from '../../constants'
-import FormField from '../../components/FormField'
-import CustomButton from '../../components/CustomButton'
+import { images } from '@/constants'
+import FormField from '@/components/FormField'
+import CustomButton from '@/components/CustomButton'
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
-import { createUser } from '../../lib/appwrite'
-import { useGlobalContext } from '../../context/GlobalProvider'
+import { createUser } from '@/lib/appwrite'
+import { useGlobalContext } from '@/context/GlobalProvider'
 import { Formik } from 'formik'
-import { signUpSchema } from '../../validation/signUp'
+import { signUpSchema } from '@/validation/signUp'
 
 const SignUp = () => {
   const form = {
