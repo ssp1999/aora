@@ -8,8 +8,8 @@ import { getAllVideos } from '@/lib/appwrite'
 import useAppwrite from '@/hooks/useAppwrite'
 import VideoCard from '@/components/common/VideoCard/VideoCard'
 import { useGlobalContext } from '@/context/GlobalProvider'
-import VideoPlayer from '@/components/VideoPlayer/VideoPlayer'
 import LatestVideos from '@/components/LatestVideos/LatestVideos'
+import { useVideoPlayer, VideoView } from 'expo-video'
 
 const Home = () => {
   const { user } = useGlobalContext()
@@ -17,6 +17,9 @@ const Home = () => {
   const [latestVideos, setLatestVideos] = useState([])
   const [isRefreshing, setIsRefreshing] = useState(false)
   const videoPlayerRef = useRef(null)
+  const player = useVideoPlayer(null, (player) => {
+    player.loop = true
+  })
 
   const handleOnRefresh = useCallback(async () => {
     setIsRefreshing(true)
@@ -26,6 +29,18 @@ const Home = () => {
 
     setIsRefreshing(false)
   }, [fetchVideos])
+
+  const startVideo = useCallback((videoSource) => {
+    player.replace(videoSource)
+    player.play()
+    videoPlayerRef.current.enterFullscreen()
+  }, [])
+
+  const handleOnFullscreenExit = useCallback(() => {
+    player.replay()
+    player.pause()
+    player.replace(null)
+  }, [player])
 
   useEffect(() => {
     setLatestVideos(videos.slice(0, 7))
@@ -45,7 +60,12 @@ const Home = () => {
 
   return (
     <SafeAreaView className='bg-primary h-full'>
-      <VideoPlayer ref={videoPlayerRef}></VideoPlayer>
+      <VideoView
+        player={player}
+        ref={videoPlayerRef}
+        style={{ display: 'none' }}
+        onFullscreenExit={handleOnFullscreenExit}
+      />
       <FlatList
         data={videos}
         keyExtractor={(item) => item.$id}
@@ -83,10 +103,9 @@ const Home = () => {
               <Text className='text-gray-100 text-lg font-pregular mb-3'>
                 Latest Videos
               </Text>
-
               <LatestVideos
                 latestVideos={latestVideos}
-                videoPlayerRef={videoPlayerRef}
+                startVideo={startVideo}
               />
             </View>
           </View>

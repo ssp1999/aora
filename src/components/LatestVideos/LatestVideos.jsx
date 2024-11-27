@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { FlatList } from 'react-native'
 import LatestVideoItem from './components/LatestVideoItem'
 
-const LatestVideos = ({ latestVideos, videoPlayerRef }) => {
+const LatestVideos = ({ latestVideos, startVideo }) => {
   const [activeItemVideoId, setActiveItemVideoId] = useState(latestVideos[0]?.$id || null)
 
   const viewableItemsChanged = useCallback(({ changed, viewableItems }) => {
@@ -22,7 +22,7 @@ const LatestVideos = ({ latestVideos, videoPlayerRef }) => {
         <LatestVideoItem
           activeItemVideoId={activeItemVideoId}
           video={video}
-          videoPlayerRef={videoPlayerRef}
+          startVideo={startVideo}
         />
       )}
       horizontal

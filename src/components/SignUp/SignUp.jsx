@@ -94,7 +94,8 @@ const SignUp = () => {
                   title='Sign Up'
                   handlePress={handleSubmit}
                   containerStyles='mt-7'
-                  isLoading={isSubmitting}
+                  disabled={isSubmitting}
+                  showLoader={isSubmiting}
                 />
               </View>
             )}

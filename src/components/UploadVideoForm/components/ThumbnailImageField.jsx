@@ -1,9 +1,11 @@
 import { icons } from '@/constants'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { usePicker } from '@/hooks/usePicker'
 
-const ThumbnailImageField = ({ image, error, handlePicker, setFieldValue, setFieldTouched, touched }) => {
+const ThumbnailImageField = ({ image, error, setFieldValue, setFieldTouched, touched }) => {
+  const { openPicker } = usePicker(['images'])
   const onPress = async () => {
-    const file = await handlePicker()
+    const file = await openPicker()
     setFieldValue('thumbnail', file || null)
     if (!file) setFieldTouched('thumbnail', true)
   }

@@ -3,7 +3,7 @@ import { Image, ImageBackground, SafeAreaView, TouchableOpacity, View } from "re
 import * as Animatable from 'react-native-animatable'
 import { icons } from '@/constants'
 
-const LatestVideoItem = ({ activeItemVideoId, video, videoPlayerRef }) => {
+const LatestVideoItem = ({ activeItemVideoId, video, startVideo }) => {
   const zoomIn = {
     0: { scale: 0.9 },
     1: { scale: 1.1 }
@@ -13,10 +13,6 @@ const LatestVideoItem = ({ activeItemVideoId, video, videoPlayerRef }) => {
     0: { scale: 1.1 },
     1: { scale: 0.9 }
   }
-
-  const startVideo = useCallback(() => {
-    videoPlayerRef.current?.openVideoPlayer(video.video)
-  }, [video.video])
 
   return (
     <SafeAreaView>
@@ -29,7 +25,7 @@ const LatestVideoItem = ({ activeItemVideoId, video, videoPlayerRef }) => {
           <TouchableOpacity
             className="relative justify-center items-center"
             activeOpacity={0.7}
-            onPress={startVideo}
+            onPress={() => startVideo(video.video)}
           >
             <ImageBackground
               source={{ uri: video.thumbnail }}

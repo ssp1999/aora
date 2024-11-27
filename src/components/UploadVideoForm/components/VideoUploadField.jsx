@@ -1,23 +1,19 @@
 import { Text, TouchableOpacity, View, Image } from 'react-native'
 import { icons } from '@/constants'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
+import { usePicker } from '@/hooks/usePicker'
 
-const VideoUploadField = ({ video, error, handlePicker, setFieldValue, setFieldTouched, touched }) => {
+const VideoUploadField = ({ video, error, setFieldValue, setFieldTouched, touched }) => {
+  const { openPicker } = usePicker(['videos'])
   const onPress = async () => {
-    const file = await handlePicker()
+    const file = await openPicker()
     setFieldValue('video', file || null)
     if (!file) setFieldTouched('video', true)
   }
 
-  const videoRef = useRef(null)
+  const videoPlayerRef = useRef(null)
   const player = useVideoPlayer(video)
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playing = false
-    }
-  }, [videoRef])
 
   return (
     <View className='mt-7 space-y-2'>
@@ -29,7 +25,7 @@ const VideoUploadField = ({ video, error, handlePicker, setFieldValue, setFieldT
         {video ? (
           <View className={`w-full h-64 rounded-2xl ${touched && error ? 'border-2 border-red-400' : ''}`}>
             <VideoView
-              ref={videoRef}
+              ref={videoPlayerRef}
               style={{ width: '100%', height: '100%' }}
               player={player}
               contentFit
