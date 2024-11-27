@@ -3,7 +3,7 @@ import { icons } from '@/constants'
 import { useCallback, useRef, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import ActionsMenu from './ActionsMenu'
+import ActionsMenu from './components/ActionsMenu'
 
 const VideoCard = ({ video: { $id, title, thumbnail, video, creator: { username, avatar } }, showActionsMenu = false }) => {
   const [isPlaying, setIsPlaying] = useState(false)

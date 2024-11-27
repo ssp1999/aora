@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { Alert } from "react-native"
 
 const useAppwrite = (fn) => {
   const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
 
-  const fetchData = async () => {
-    setIsLoading(true)
+  const fetchData = useCallback(async () => {
+    setIsFetching(true)
 
     try {
       const response = await fn()
@@ -14,17 +14,11 @@ const useAppwrite = (fn) => {
     } catch (error) {
       Alert.alert('Error', error.message)
     } finally {
-      setIsLoading(false)
+      setIsFetching(false)
     }
-  }
+  }, [fn])
 
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  const refetch = () => fetchData()
-
-  return { data, refetch, isLoading }
+  return { data, setData, fetchData, isFetching }
 }
 
 export default useAppwrite

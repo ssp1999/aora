@@ -1,18 +1,13 @@
 import { useVideoPlayer, VideoView } from "expo-video"
 import { forwardRef, useCallback, useImperativeHandle, useRef } from "react"
 
-const VideoPlayer = forwardRef((props, ref) => {
+const VideoPlayer = forwardRef((_, ref) => {
   const videoRef = useRef(null)
   const player = useVideoPlayer(null, (player) => {
-    player.bufferOptions = {
-      minBufferForPlayback: 0,
-      preferredForwardBufferDuration: 0,
-      waitsToMinimizeStalling: false
-    }
+    player.loop = true
   })
 
   const openVideoPlayer = useCallback((videoSource) => {
-    player.loop = true
     player.replace(videoSource)
     player.play()
     videoRef.current.enterFullscreen()

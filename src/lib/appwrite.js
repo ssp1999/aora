@@ -104,61 +104,43 @@ export const signIn = async (email, password) => {
   }
 }
 
-export const getAllPosts = async () => {
+export const getAllVideos = async () => {
   try {
-    const posts = await databases.listDocuments(
+    const videos = await databases.listDocuments(
       databaseId,
       videoCollectionId,
       [Query.orderDesc('$createdAt')]
     )
 
-    return posts.documents
+    return videos.documents
   } catch (error) {
     throw new Error(error.message)
   }
 }
 
-export const getLatestPosts = async () => {
+export const searchVideos = async (query) => {
   try {
-    const recentPosts = 7
-    const posts = await databases.listDocuments(
-      databaseId,
-      videoCollectionId,
-      [
-        Query.orderDesc('$createdAt'),
-        Query.limit(recentPosts)
-      ]
-    )
-
-    return posts.documents
-  } catch (error) {
-    throw new Error(error.message)
-  }
-}
-
-export const searchPosts = async (query) => {
-  try {
-    const posts = await databases.listDocuments(
+    const videos = await databases.listDocuments(
       databaseId,
       videoCollectionId,
       [Query.search('title', query)]
     )
 
-    return posts.documents
+    return videos.documents
   } catch (error) {
     throw new Error(error.message)
   }
 }
 
-export const getUserPosts = async (userId) => {
+export const getUserVideos = async (userId) => {
   try {
-    const posts = await databases.listDocuments(
+    const videos = await databases.listDocuments(
       databaseId,
       videoCollectionId,
       [Query.equal('creator', userId), Query.orderDesc('$createdAt')]
     )
 
-    return posts.documents
+    return videos.documents
   } catch (error) {
     throw new Error(error.message)
   }
