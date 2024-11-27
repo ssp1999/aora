@@ -13,7 +13,7 @@ const GlobalProvider = ({ children }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       await fetchCurrentUser()
-      setIsLoggedIn(user ? true : false)
+      setIsLoggedIn(typeof user === 'object' && Object.keys(user).length > 0)
     }
 
     fetchInitialData()

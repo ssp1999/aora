@@ -10,7 +10,7 @@ const useAppwrite = (fn) => {
 
     try {
       const response = await fn()
-      setData(response)
+      setData(response || data)
     } catch (error) {
       Alert.alert('Error', error.message)
     } finally {
