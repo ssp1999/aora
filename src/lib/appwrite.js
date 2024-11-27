@@ -3,11 +3,6 @@ import { Client, Account, ID, Avatars, Databases, Query, Storage } from 'react-n
 export const appWriteConfig = {
   endpoint: 'https://cloud.appwrite.io/v1',
   plataform: 'com.ssp.aora',
-  // projectId: '67281f45001455da5284',
-  // databaseId: '672820ac0017f5446021',
-  // userCollectionId: '67282118003d13602125',
-  // videoCollectionId: '6728213a0038a13f3099',
-  // storageId: '672822a1001f563075b1'
   projectId: '6745715800181b925e6a',
   databaseId: '67457327002337d95a2d',
   userCollectionId: '67457361002a3ba80f68',
