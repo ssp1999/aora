@@ -64,20 +64,20 @@ const UploadVideoForm = () => {
                 touched={touched.title}
               />
 
-              <VideoUploadField
-                video={values.video}
-                error={errors.video}
-                setFieldValue={setFieldValue}
-                setFieldTouched={setFieldTouched}
-                touched={touched.video}
-              />
-
               <ThumbnailImageField
                 image={values.thumbnail}
                 error={errors.thumbnail}
                 setFieldValue={setFieldValue}
                 setFieldTouched={setFieldTouched}
                 touched={touched.thumbnail}
+              />
+
+              <VideoUploadField
+                video={values.video}
+                error={errors.video}
+                setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
+                touched={touched.video}
               />
 
               <CustomButton
