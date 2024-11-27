@@ -85,7 +85,11 @@ export const getCurrentUser = async () => {
     return currentUser.documents[0]
 
   } catch (error) {
-    console.log(error)
+    if (error.message.includes('missing scope')) {
+      return null
+    } else {
+      throw new Error(error.message)
+    }
   }
 }
 

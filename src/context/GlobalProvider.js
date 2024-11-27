@@ -19,7 +19,7 @@ const GlobalProvider = ({ children }) => {
   }, [fetchCurrentUser])
 
   useEffect(() => {
-    setIsLoggedIn(typeof user === 'object' && Object.keys(user).length > 0)
+    setIsLoggedIn(user && typeof user === 'object' && Object.keys(user).length > 0)
   }, [user])
 
   return (
