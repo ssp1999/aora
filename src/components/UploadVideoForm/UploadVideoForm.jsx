@@ -17,8 +17,7 @@ const UploadVideoForm = () => {
   const form = {
     title: '',
     video: null,
-    thumbnail: null,
-    prompt: ''
+    thumbnail: null
   }
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -79,17 +78,6 @@ const UploadVideoForm = () => {
                 setFieldValue={setFieldValue}
                 setFieldTouched={setFieldTouched}
                 touched={touched.thumbnail}
-              />
-
-              <FormField
-                title='AI Prompt'
-                placeholder='The prompt you used to create this video'
-                otherStyles='mt-7'
-                value={values.prompt}
-                onChangeText={handleChange('prompt')}
-                onBlur={handleBlur('prompt')}
-                error={errors.prompt}
-                touched={touched.prompt}
               />
 
               <CustomButton

@@ -22,5 +22,4 @@ export const uploadVideoSchema = Yup.object().shape({
     .test("fileType", "Unsupported image format", (file) => {
       return file && SUPPORTED_IMAGE_FORMATS.includes(file.mimeType)
     }),
-  prompt: Yup.string().required('Required prompt').min(4, 'At least 4 characters'),
 })
