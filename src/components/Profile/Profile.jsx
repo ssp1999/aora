@@ -77,7 +77,7 @@ const Profile = () => {
             <View className='mt-5 flex-row'>
               <InfoBox
                 title={videos.length || 0}
-                subtitle='Posts'
+                subtitle={videos.length > 1 ? 'Posts' : 'Post'}
                 containerStyles='mr-10'
                 titleStyles='text-xl'
               />

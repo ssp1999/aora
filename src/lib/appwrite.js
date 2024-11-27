@@ -190,7 +190,7 @@ export const uploadFile = async (file, type) => {
 
     const fileUrl = await getFilePreview(uploadedFile.$id, type)
 
-    return fileUrl
+    return { fileId: uploadedFile.$id, fileUrl }
   } catch (error) {
     throw new Error(error.message)
   }
@@ -198,17 +198,17 @@ export const uploadFile = async (file, type) => {
 
 export const createVideo = async (form) => {
   try {
-    const [thumbnailUrl, videoUrl] = await Promise.all([
-      uploadFile(form.thumbnail, 'image'),
-      uploadFile(form.video, 'video'),
-    ])
+    const { fileId: thumbnailId, fileUrl: thumbnailUrl } = await uploadFile(form.thumbnail, 'image')
+    const { fileId: videoId, fileUrl: videoUrl } = await uploadFile(form.video, 'video')
 
     const newPost = await databases.createDocument(
       databaseId, videoCollectionId, ID.unique(), {
       title: form.title,
       thumbnail: thumbnailUrl,
       video: videoUrl,
-      creator: form.userId
+      creator: form.userId,
+      thumbnailId: thumbnailId,
+      videoId: videoId,
     })
 
     return newPost
@@ -219,6 +219,14 @@ export const createVideo = async (form) => {
 
 export const deletePost = async (postId) => {
   try {
+    const post = await databases.getDocument(databaseId, videoCollectionId, postId)
+
+    const videoId = post.videoId
+    const thumbnailId = post.thumbnailId
+
+    await storage.deleteFile(storageId, videoId)
+    await storage.deleteFile(storageId, thumbnailId)
+
     await databases.deleteDocument(databaseId, videoCollectionId, postId)
   } catch (error) {
     throw new Error(error.message)

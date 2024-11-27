@@ -20,10 +20,14 @@ const ActionsMenu = ({ videoId, fetchVideos }) => {
   const onPress = () => {
     const options = ['Delete', 'Cancel']
     const destructiveButtonIndex = 0
-    const cancelButtonIndex = 2
+    const cancelButtonIndex = 1
 
     showActionSheetWithOptions({
       options,
+      containerStyle: {
+        backgroundColor: '#161622'
+      },
+      cancelButtonTintColor: '#CDCDE0',
       cancelButtonIndex,
       destructiveButtonIndex
     }, (selectedIndex) => {

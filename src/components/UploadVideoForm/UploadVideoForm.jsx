@@ -52,7 +52,7 @@ const UploadVideoForm = () => {
           onSubmit={handleSubmit}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, setFieldValue, touched, setFieldTouched }) => (
-            <View>
+            <View className='my-auto py-6'>
               <FormField
                 title='Video Title'
                 placeholder='Give your video a catch title...'
@@ -85,7 +85,7 @@ const UploadVideoForm = () => {
                 handlePress={handleSubmit}
                 disabled={isSubmiting}
                 showLoader={isSubmiting}
-                containerStyles='mt-7'
+                containerStyles='mt-12'
               />
             </View>
           )}
