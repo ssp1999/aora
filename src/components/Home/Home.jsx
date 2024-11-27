@@ -10,6 +10,7 @@ import VideoCard from '@/components/common/VideoCard/VideoCard'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import LatestVideos from '@/components/LatestVideos/LatestVideos'
 import { useVideoPlayer, VideoView } from 'expo-video'
+import { useFocusEffect } from 'expo-router'
 
 const Home = () => {
   const { user } = useGlobalContext()
@@ -46,17 +47,19 @@ const Home = () => {
     setLatestVideos(videos.slice(0, 7))
   }, [videos])
 
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      if (videos.length > 0) {
-        setVideos([])
+  useFocusEffect(
+    useCallback(() => {
+      const fetchInitialData = async () => {
+        if (videos.length > 0) {
+          setVideos([])
+        }
+
+        await fetchVideos()
       }
 
-      await fetchVideos()
-    }
-
-    fetchInitialData()
-  }, [])
+      fetchInitialData()
+    }, [])
+  )
 
   return (
     <SafeAreaView className='bg-primary h-full'>

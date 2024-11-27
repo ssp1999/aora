@@ -7,12 +7,12 @@ import VideoCard from '@/components/common/VideoCard/VideoCard'
 import { useGlobalContext } from '@/context/GlobalProvider'
 import { icons } from '@/constants'
 import InfoBox from './components/InfoBox'
-import { router } from 'expo-router'
-import { useCallback, useEffect } from 'react'
+import { router, useFocusEffect } from 'expo-router'
+import { useCallback } from 'react'
 
 const Profile = () => {
-  const { user, setUser, setIsLoggedIn, shouldRefetch, setShouldRefetch } = useGlobalContext()
-  const { data: videos, fetchData } = useAppwrite(useCallback(() => getUserVideos(user.$id), [user.$id]))
+  const { user, setUser, setIsLoggedIn } = useGlobalContext()
+  const { data: videos, fetchData: fetchVideos } = useAppwrite(useCallback(() => getUserVideos(user.$id), [user.$id]))
 
   const logout = async () => {
     await signOut()
@@ -22,9 +22,19 @@ const Profile = () => {
     router.replace('/sign-in')
   }
 
-  useEffect(() => {
-    fetchData()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      const fetchInitialData = async () => {
+        if (videos.length > 0) {
+          setVideos([])
+        }
+
+        await fetchVideos()
+      }
+
+      fetchInitialData()
+    }, [])
+  )
 
   return (
     <SafeAreaView className='bg-primary h-full'>
@@ -84,6 +94,7 @@ const Profile = () => {
           <VideoCard
             video={item}
             showActionsMenu={user.$id === item.creator.$id}
+            fetchVideos={fetchVideos}
           />
         )}
       />

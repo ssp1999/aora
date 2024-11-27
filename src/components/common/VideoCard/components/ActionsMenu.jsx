@@ -3,17 +3,15 @@ import React from 'react'
 import { icons } from '@/constants'
 import { useActionSheet } from '@expo/react-native-action-sheet'
 import { deletePost } from '@/lib/appwrite'
-import { useGlobalContext } from '@/context/GlobalProvider'
 
-const ActionsMenu = ({ videoId }) => {
+const ActionsMenu = ({ videoId, fetchVideos }) => {
   const { showActionSheetWithOptions } = useActionSheet()
-  const { setShouldRefetch } = useGlobalContext()
 
   const handleDelete = async () => {
     try {
       await deletePost(videoId)
-      setShouldRefetch(true)
       Alert.alert('Success', 'Post deleted successfully')
+      await fetchVideos()
     } catch (error) {
       Alert.alert('Error', error.message)
     }

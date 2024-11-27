@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import ActionsMenu from './components/ActionsMenu'
 
-const VideoCard = ({ video: { $id, title, thumbnail, video, creator: { username, avatar } }, showActionsMenu = false }) => {
+const VideoCard = ({ video: { $id, title, thumbnail, video, creator: { username, avatar } }, showActionsMenu = false, fetchVideos }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const videoRef = useRef(null)
   const player = useVideoPlayer(video)
@@ -42,6 +42,7 @@ const VideoCard = ({ video: { $id, title, thumbnail, video, creator: { username,
         {showActionsMenu && (
           <ActionsMenu
             videoId={$id}
+            fetchVideos={fetchVideos}
           />
         )}
 

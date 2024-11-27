@@ -16,11 +16,11 @@ const SignIn = () => {
     password: ''
   }
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmiting, setIsSubmiting] = useState(false)
   const { setUser, setIsLoggedIn } = useGlobalContext()
 
   const handleSubmit = async (values, { resetForm }) => {
-    setIsSubmitting(true)
+    setIsSubmiting(true)
 
     try {
       await signIn(values.email, values.password)
@@ -35,7 +35,7 @@ const SignIn = () => {
       Alert.alert('Error', error.message)
     } finally {
       resetForm()
-      setIsSubmitting(false)
+      setIsSubmiting(false)
     }
   }
 
@@ -86,7 +86,7 @@ const SignIn = () => {
                   title='Sign In'
                   handlePress={handleSubmit}
                   containerStyles='mt-7'
-                  disabled={isSubmitting}
+                  disabled={isSubmiting}
                   showLoader={isSubmiting}
                 />
               </View>

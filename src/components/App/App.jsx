@@ -7,9 +7,9 @@ import CustomButton from '@/components/common/CustomButton/CustomButton'
 import { useGlobalContext } from '@/context/GlobalProvider'
 
 const App = () => {
-  const { isLoading, isLoggedIn } = useGlobalContext()
+  const { isFetchingUser, isLoggedIn } = useGlobalContext()
 
-  return !isLoading && isLoggedIn ? (
+  return !isFetchingUser && isLoggedIn ? (
     <Redirect href='/home' />
   ) : (
     <SafeAreaView className='bg-primary h-full'>
