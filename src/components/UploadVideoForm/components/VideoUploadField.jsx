@@ -30,6 +30,16 @@ const VideoUploadField = ({ video, error, setFieldValue, setFieldTouched, touche
               player={player}
               contentFit
             />
+            <TouchableOpacity
+              className='absolute p-2 right-0 top-0'
+              onPress={() => setFieldValue('video', null)}
+            >
+              <Image
+                source={icons.remove}
+                resizeMode='contain'
+                className='w-8 h-8'
+              />
+            </TouchableOpacity>
           </View>
         ) : (
           <View className={`w-full h-40 px-4 bg-black-100 rounded-2xl justify-center items-center ${touched && error ? 'border-2 border-red-400' : ''}`}>

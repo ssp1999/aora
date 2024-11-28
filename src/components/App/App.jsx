@@ -1,7 +1,6 @@
 import { View, Text, ScrollView, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Redirect, router } from 'expo-router'
-import { StatusBar } from 'expo-status-bar'
 import { images } from '@/constants'
 import CustomButton from '@/components/common/CustomButton/CustomButton'
 import { useGlobalContext } from '@/context/GlobalProvider'
@@ -50,7 +49,6 @@ const App = () => {
         </View>
       </ScrollView>
 
-      <StatusBar backgroundColor='#161622' style='light' />
     </SafeAreaView>
   )
 }
