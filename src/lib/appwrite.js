@@ -85,7 +85,7 @@ export const getCurrentUser = async () => {
     return currentUser.documents[0]
 
   } catch (error) {
-    if (error.message.includes('missing scope')) {
+    if (error.message.includes('missing scope')) { // workaround for appwrite bug
       return null
     } else {
       throw new Error(error.message)
