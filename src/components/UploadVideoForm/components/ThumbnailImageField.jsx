@@ -19,7 +19,7 @@ const ThumbnailImageField = ({ image, error, setFieldValue, setFieldTouched, tou
       <TouchableOpacity onPress={onPress}>
         {image ? (
           <Image
-            source={{ uri: image.uri }}
+            source={{ uri: image.uri || image }}
             resizeMode='cover'
             className={`w-full h-64 rounded-2xl ${touched && error ? 'border-2 border-red-400' : ''}`}
           />

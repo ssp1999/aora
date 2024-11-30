@@ -10,7 +10,7 @@ import { useLocalSearchParams } from 'expo-router'
 
 const Search = () => {
   const { query } = useLocalSearchParams()
-  const { data: posts, fetchData } = useAppwrite(useCallback(() => searchVideos(query), [query]))
+  const { data: videos, fetchData } = useAppwrite(useCallback(() => searchVideos(query), [query]))
 
   useEffect(() => {
     fetchData()
@@ -19,7 +19,7 @@ const Search = () => {
   return (
     <SafeAreaView className='bg-primary h-full'>
       <FlatList
-        data={posts}
+        data={videos}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
           <VideoCard

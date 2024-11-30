@@ -1,4 +1,4 @@
-import UploadVideoForm from "../UploadVideoForm/UploadVideoForm"
+import UploadVideoForm from "../../UploadVideoForm/UploadVideoForm"
 
 const Create = () => {
   return (

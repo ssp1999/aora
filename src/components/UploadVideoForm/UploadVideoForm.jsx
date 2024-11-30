@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import FormField from '@/components/common/FormField/FormField'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import CustomButton from '@/components/common/CustomButton/CustomButton'
 import { router } from 'expo-router'
 import { createVideo } from '@/lib/appwrite'
@@ -10,32 +10,66 @@ import VideoUploadField from './components/VideoUploadField'
 import ThumbnailImageField from './components/ThumbnailImageField'
 import { uploadVideoSchema } from '@/validation/uploadVideo'
 import { useGlobalContext } from '@/context/GlobalProvider'
+import useAppwrite from '@/hooks/useAppwrite'
+import { getVideo, updateVideo } from '../../lib/appwrite'
 
-const UploadVideoForm = () => {
+const UploadVideoForm = ({ id, update = false }) => {
   const { user } = useGlobalContext()
   const [isSubmiting, setIsSubmiting] = useState(false)
+
+  const { data, fetchData } = useAppwrite(useCallback(() => getVideo(id), []))
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      if (id) {
+        await fetchData()
+      }
+    }
+
+    fetchInitialData()
+  }, [])
+
   const form = {
-    title: '',
-    video: null,
-    thumbnail: null
+    title: data?.title || '',
+    video: data?.video || null,
+    thumbnail: data?.thumbnail || null
+  }
+
+  const getChangedValues = (initialValues, currentValues) => {
+    const changedValues = {}
+    for (const key in currentValues) {
+      if (initialValues[key] !== currentValues[key]) {
+        changedValues[key] = currentValues[key]
+      }
+    }
+    return changedValues
   }
 
   const handleSubmit = async (values, { resetForm }) => {
     setIsSubmiting(true)
 
     try {
-      await createVideo({
-        ...values,
-        userId: user.$id
-      })
+      const changedValues = getChangedValues(form, values)
 
-      Alert.alert('Success', 'Post uploaded successfully')
+      if (Object.keys(changedValues).length === 0) return
+
+      const successMessage = update ? 'Video updated successfully' : 'Video uploaded successfully'
+      const redirectRoute = update ? '/profile' : '/home'
+
+      if (update) {
+        await updateVideo(id, changedValues)
+      } else {
+        await createVideo({ ...values, userId: user.$id })
+      }
+
+      Alert.alert('Success', successMessage)
+      router.push(redirectRoute)
+
     } catch (error) {
       Alert.alert('Error', error.message)
     } finally {
       resetForm()
       setIsSubmiting(false)
-      router.push('/home')
     }
   }
 
@@ -43,16 +77,17 @@ const UploadVideoForm = () => {
     <SafeAreaView className='bg-primary h-full'>
       <ScrollView className='px-4 my-6'>
         <Text className='text-white text-2xl font-psemibold'>
-          Upload Video
+          {update ? 'Update Video' : 'Upload Video'}
         </Text>
 
         <Formik
           initialValues={form}
+          enableReinitialize
           validationSchema={uploadVideoSchema}
           onSubmit={handleSubmit}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, setFieldValue, touched, setFieldTouched }) => (
-            <View className='my-auto py-6'>
+          {({ handleChange, handleBlur, handleSubmit, values, errors, setFieldValue, touched, setFieldTouched, dirty }) => (
+            <View>
               <FormField
                 title='Video Title'
                 placeholder='Give your video a catch title...'
@@ -83,9 +118,9 @@ const UploadVideoForm = () => {
               <CustomButton
                 title='Submit & Publish'
                 handlePress={handleSubmit}
-                disabled={isSubmiting}
+                disabled={isSubmiting || !dirty}
                 showLoader={isSubmiting}
-                containerStyles='mt-12'
+                containerStyles='mt-8'
               />
             </View>
           )}

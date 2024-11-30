@@ -205,8 +205,7 @@ export const createVideo = async (form) => {
     const { fileId: thumbnailId, fileUrl: thumbnailUrl } = await uploadFile(form.thumbnail, 'image')
     const { fileId: videoId, fileUrl: videoUrl } = await uploadFile(form.video, 'video')
 
-    const newPost = await databases.createDocument(
-      databaseId, videoCollectionId, ID.unique(), {
+    const newVideo = await databases.createDocument(databaseId, videoCollectionId, ID.unique(), {
       title: form.title,
       thumbnail: thumbnailUrl,
       video: videoUrl,
@@ -215,23 +214,79 @@ export const createVideo = async (form) => {
       videoId: videoId,
     })
 
-    return newPost
+    return newVideo
   } catch (error) {
     throw new Error(error.message)
   }
 }
 
-export const deletePost = async (postId) => {
+export const getVideo = async (videoId) => {
   try {
-    const post = await databases.getDocument(databaseId, videoCollectionId, postId)
+    const video = await databases.getDocument(databaseId, videoCollectionId, videoId)
 
-    const videoId = post.videoId
-    const thumbnailId = post.thumbnailId
+    return video
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}
+
+export const updateVideo = async (documentVideoId, form) => {
+  try {
+    let videoId, videoUrl, thumbnailId, thumbnailUrl
+
+    const video = await databases.getDocument(databaseId, videoCollectionId, documentVideoId)
+
+    if (form.video) {
+      const { fileId, fileUrl } = await uploadFile(form.video, 'video')
+      videoId = fileId
+      videoUrl = fileUrl
+
+      const existingVideoId = video.videoId
+      await storage.deleteFile(storageId, existingVideoId)
+    }
+
+    if (form.thumbnail) {
+      const { fileId, fileUrl } = await uploadFile(form.thumbnail, 'image')
+      thumbnailId = fileId
+      thumbnailUrl = fileUrl
+
+      const existingThumbnailId = video.thumbnailId
+      await storage.deleteFile(storageId, existingThumbnailId)
+    }
+
+    const updatedVideo = {
+      title: form.title || null,
+      videoId: videoId || null,
+      video: videoUrl || null,
+      thumbnailId: thumbnailId || null,
+      thumbnail: thumbnailUrl || null,
+    }
+
+    const validVideo = Object.fromEntries(
+      Object.entries(updatedVideo).filter(([_, value]) => value !== null)
+    )
+
+    const videoUpload = await databases.updateDocument(
+      databaseId, videoCollectionId, documentVideoId, validVideo
+    )
+
+    return videoUpload
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}
+
+export const deleteVideo = async (documentVideoId) => {
+  try {
+    const video = await databases.getDocument(databaseId, videoCollectionId, documentVideoId)
+
+    const videoId = video.videoId
+    const thumbnailId = video.thumbnailId
 
     await storage.deleteFile(storageId, videoId)
     await storage.deleteFile(storageId, thumbnailId)
 
-    await databases.deleteDocument(databaseId, videoCollectionId, postId)
+    await databases.deleteDocument(databaseId, videoCollectionId, documentVideoId)
   } catch (error) {
     throw new Error(error.message)
   }
