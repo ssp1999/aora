@@ -1,4 +1,3 @@
-import { useCallback } from "react"
 import { Image, ImageBackground, SafeAreaView, TouchableOpacity, View } from "react-native"
 import * as Animatable from 'react-native-animatable'
 import { icons } from '@/constants'

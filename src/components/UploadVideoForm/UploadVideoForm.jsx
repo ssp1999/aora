@@ -1,9 +1,9 @@
 import { View, Text, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import FormField from '@/components/common/FormField/FormField'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import CustomButton from '@/components/common/CustomButton/CustomButton'
-import { router } from 'expo-router'
+import { router, useFocusEffect } from 'expo-router'
 import { createVideo } from '@/lib/appwrite'
 import { Formik } from 'formik'
 import VideoUploadField from './components/VideoUploadField'
@@ -16,6 +16,7 @@ import { getVideo, updateVideo } from '../../lib/appwrite'
 const UploadVideoForm = ({ id, update = false }) => {
   const { user } = useGlobalContext()
   const [isSubmiting, setIsSubmiting] = useState(false)
+  const formikRef = useRef(null)
 
   const { data, fetchData } = useAppwrite(useCallback(() => getVideo(id), []))
 
@@ -73,6 +74,14 @@ const UploadVideoForm = ({ id, update = false }) => {
     }
   }
 
+  useFocusEffect(
+    useCallback(() => {
+      if (formikRef.current) {
+        formikRef.current.resetForm()
+      }
+    }, [])
+  )
+
   return (
     <SafeAreaView className='bg-primary h-full'>
       <ScrollView className='px-4 my-6'>
@@ -81,6 +90,7 @@ const UploadVideoForm = ({ id, update = false }) => {
         </Text>
 
         <Formik
+          innerRef={formikRef}
           initialValues={form}
           enableReinitialize
           validationSchema={uploadVideoSchema}
