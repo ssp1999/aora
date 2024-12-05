@@ -16,6 +16,9 @@ import { getVideo, updateVideo } from '../../lib/appwrite'
 const UploadVideoForm = ({ id, update = false }) => {
   const { user } = useGlobalContext()
   const [isSubmiting, setIsSubmiting] = useState(false)
+  const [videoURL, setVideoURL] = useState(null)
+  const [thumbnailURL, setThumbnailURL] = useState(null)
+
   const formikRef = useRef(null)
 
   const { data, fetchData } = useAppwrite(useCallback(() => getVideo(id), []))
@@ -30,10 +33,15 @@ const UploadVideoForm = ({ id, update = false }) => {
     fetchInitialData()
   }, [])
 
+  useEffect(() => {
+    setVideoURL(data.video)
+    setThumbnailURL(data.thumbnail)
+  }, [data])
+
   const form = {
     title: data?.title || '',
-    video: data?.video || null,
-    thumbnail: data?.thumbnail || null
+    video: null,
+    thumbnail: null
   }
 
   const getChangedValues = (initialValues, currentValues) => {
@@ -110,11 +118,13 @@ const UploadVideoForm = ({ id, update = false }) => {
               />
 
               <ThumbnailImageField
-                image={values.thumbnail}
+                thumbnail={values.thumbnail}
                 error={errors.thumbnail}
                 setFieldValue={setFieldValue}
                 setFieldTouched={setFieldTouched}
                 touched={touched.thumbnail}
+                thumbnailURL={thumbnailURL}
+                setThumbnailURL={setThumbnailURL}
               />
 
               <VideoUploadField
@@ -123,6 +133,8 @@ const UploadVideoForm = ({ id, update = false }) => {
                 setFieldValue={setFieldValue}
                 setFieldTouched={setFieldTouched}
                 touched={touched.video}
+                videoURL={videoURL}
+                setVideoURL={setVideoURL}
               />
 
               <CustomButton

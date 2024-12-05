@@ -1,19 +1,31 @@
 import { Text, TouchableOpacity, View, Image } from 'react-native'
 import { icons } from '@/constants'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { usePicker } from '@/hooks/usePicker'
 
-const VideoUploadField = ({ video, error, setFieldValue, setFieldTouched, touched }) => {
+const VideoUploadField = ({ video, error, setFieldValue, setFieldTouched, touched, videoURL, setVideoURL }) => {
   const { openPicker } = usePicker(['videos'])
   const onPress = async () => {
     const file = await openPicker()
     setFieldValue('video', file || null)
+    setVideoURL(file.uri || null)
     if (!file) setFieldTouched('video', true)
   }
 
   const videoPlayerRef = useRef(null)
-  const player = useVideoPlayer(video)
+  const player = useVideoPlayer(null)
+
+  useEffect(() => {
+    if (videoURL) {
+      player.replace(videoURL)
+    }
+  }, [videoURL])
+
+  const clearVideo = () => {
+    setVideoURL(null)
+    setFieldValue('video', null)
+  }
 
   return (
     <View className='mt-7 space-y-2'>
@@ -22,7 +34,7 @@ const VideoUploadField = ({ video, error, setFieldValue, setFieldTouched, touche
       </Text>
 
       <TouchableOpacity onPress={onPress}>
-        {video ? (
+        {videoURL ? (
           <View className={`w-full h-64 rounded-2xl ${touched && error ? 'border-2 border-red-400' : ''}`}>
             <VideoView
               ref={videoPlayerRef}
@@ -32,7 +44,7 @@ const VideoUploadField = ({ video, error, setFieldValue, setFieldTouched, touche
             />
             <TouchableOpacity
               className='absolute p-2 right-0 top-0'
-              onPress={() => setFieldValue('video', null)}
+              onPress={() => clearVideo()}
             >
               <Image
                 source={icons.remove}

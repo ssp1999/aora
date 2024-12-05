@@ -2,11 +2,12 @@ import { icons } from '@/constants'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { usePicker } from '@/hooks/usePicker'
 
-const ThumbnailImageField = ({ image, error, setFieldValue, setFieldTouched, touched }) => {
+const ThumbnailImageField = ({ thumbnail, error, setFieldValue, setFieldTouched, touched, thumbnailURL, setThumbnailURL }) => {
   const { openPicker } = usePicker(['images'])
   const onPress = async () => {
     const file = await openPicker()
     setFieldValue('thumbnail', file || null)
+    setThumbnailURL(file.uri || null)
     if (!file) setFieldTouched('thumbnail', true)
   }
 
@@ -17,9 +18,9 @@ const ThumbnailImageField = ({ image, error, setFieldValue, setFieldTouched, tou
       </Text>
 
       <TouchableOpacity onPress={onPress}>
-        {image ? (
+        {thumbnailURL ? (
           <Image
-            source={{ uri: image.uri || image }}
+            source={{ uri: thumbnailURL }}
             resizeMode='cover'
             className={`w-full h-64 rounded-2xl ${touched && error ? 'border-2 border-red-400' : ''}`}
           />
