@@ -16,8 +16,6 @@ import { getVideo, updateVideo } from '../../lib/appwrite'
 const UploadVideoForm = ({ id, update = false }) => {
   const { user } = useGlobalContext()
   const [isSubmiting, setIsSubmiting] = useState(false)
-  const [videoURL, setVideoURL] = useState(null)
-  const [thumbnailURL, setThumbnailURL] = useState(null)
 
   const formikRef = useRef(null)
 
@@ -33,15 +31,12 @@ const UploadVideoForm = ({ id, update = false }) => {
     fetchInitialData()
   }, [])
 
-  useEffect(() => {
-    setVideoURL(data.video)
-    setThumbnailURL(data.thumbnail)
-  }, [data])
-
   const form = {
     title: data?.title || '',
     video: null,
-    thumbnail: null
+    thumbnail: null,
+    videoURL: data?.video || null,
+    thumbnailURL: data?.thumbnail || null,
   }
 
   const getChangedValues = (initialValues, currentValues) => {
@@ -104,7 +99,7 @@ const UploadVideoForm = ({ id, update = false }) => {
           validationSchema={uploadVideoSchema}
           onSubmit={handleSubmit}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, setFieldValue, touched, setFieldTouched, dirty }) => (
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched, dirty, setFieldValue, setFieldTouched, validateForm }) => (
             <View>
               <FormField
                 title='Video Title'
@@ -118,23 +113,21 @@ const UploadVideoForm = ({ id, update = false }) => {
               />
 
               <ThumbnailImageField
-                thumbnail={values.thumbnail}
+                thumbnailURL={values.thumbnailURL}
                 error={errors.thumbnail}
+                touched={touched.thumbnail}
                 setFieldValue={setFieldValue}
                 setFieldTouched={setFieldTouched}
-                touched={touched.thumbnail}
-                thumbnailURL={thumbnailURL}
-                setThumbnailURL={setThumbnailURL}
+                validateForm={validateForm}
               />
 
               <VideoUploadField
-                video={values.video}
+                videoURL={values.videoURL}
                 error={errors.video}
+                touched={touched.video}
                 setFieldValue={setFieldValue}
                 setFieldTouched={setFieldTouched}
-                touched={touched.video}
-                videoURL={videoURL}
-                setVideoURL={setVideoURL}
+                validateForm={validateForm}
               />
 
               <CustomButton

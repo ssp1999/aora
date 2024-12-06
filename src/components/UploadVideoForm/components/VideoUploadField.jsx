@@ -4,13 +4,17 @@ import { useVideoPlayer, VideoView } from 'expo-video'
 import { useEffect, useRef } from 'react'
 import { usePicker } from '@/hooks/usePicker'
 
-const VideoUploadField = ({ video, error, setFieldValue, setFieldTouched, touched, videoURL, setVideoURL }) => {
+const VideoUploadField = ({ videoURL, error, touched, setFieldValue, setFieldTouched, validateForm }) => {
   const { openPicker } = usePicker(['videos'])
   const onPress = async () => {
     const file = await openPicker()
-    setFieldValue('video', file || null)
-    setVideoURL(file.uri || null)
-    if (!file) setFieldTouched('video', true)
+
+    await Promise.all([
+      setFieldValue('video', file || null, false),
+      setFieldValue('videoURL', file || null, false),
+      setFieldTouched('video', true, false),
+      setFieldTouched('videoURL', true, false)
+    ])
   }
 
   const videoPlayerRef = useRef(null)
@@ -20,11 +24,20 @@ const VideoUploadField = ({ video, error, setFieldValue, setFieldTouched, touche
     if (videoURL) {
       player.replace(videoURL)
     }
+
+    // Delays the setting of touched fields to ensure that the field value has been updated before validation is triggered
+    setTimeout(() => {
+      validateForm()
+    }, 0)
   }, [videoURL])
 
-  const clearVideo = () => {
-    setVideoURL(null)
-    setFieldValue('video', null)
+  const clearVideo = async () => {
+    await Promise.all([
+      setFieldValue('video', null, false),
+      setFieldValue('videoURL', null, false),
+      setFieldTouched('video', true, false),
+      setFieldTouched('videoURL', true, false)
+    ])
   }
 
   return (

@@ -1,15 +1,27 @@
 import { icons } from '@/constants'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { usePicker } from '@/hooks/usePicker'
+import { useEffect } from 'react'
 
-const ThumbnailImageField = ({ thumbnail, error, setFieldValue, setFieldTouched, touched, thumbnailURL, setThumbnailURL }) => {
+const ThumbnailImageField = ({ thumbnailURL, error, touched, setFieldValue, setFieldTouched, validateForm }) => {
   const { openPicker } = usePicker(['images'])
   const onPress = async () => {
     const file = await openPicker()
-    setFieldValue('thumbnail', file || null)
-    setThumbnailURL(file.uri || null)
-    if (!file) setFieldTouched('thumbnail', true)
+
+    await Promise.all([
+      setFieldValue('thumbnail', file || null, false),
+      setFieldValue('thumbnailURL', file.uri || null, false),
+      setFieldTouched('thumbnail', true, false),
+      setFieldTouched('thumbnailURL', true, false)
+    ])
   }
+
+  useEffect(() => {
+    // Delays the setting of touched fields to ensure that the field value has been updated before validation is triggered
+    setTimeout(() => {
+      validateForm()
+    }, 0)
+  }, [thumbnailURL])
 
   return (
     <View className='mt-7 space-y-2'>
