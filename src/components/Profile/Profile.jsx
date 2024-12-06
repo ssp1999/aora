@@ -93,7 +93,7 @@ const Profile = () => {
         renderItem={({ item }) => (
           <VideoCard
             video={item}
-            showActionsMenu={user.$id === item.creator.$id}
+            showActionsMenu={user?.$id === item.creator.$id}
             fetchVideos={fetchVideos}
           />
         )}
