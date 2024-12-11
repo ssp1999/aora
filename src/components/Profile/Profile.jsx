@@ -12,7 +12,11 @@ import { useCallback } from 'react'
 
 const Profile = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext()
-  const { data: videos, fetchData: fetchVideos } = useAppwrite(useCallback(() => getUserVideos(user.$id), [user.$id]))
+  const { data: videos, fetchData: fetchVideos } = useAppwrite(useCallback(() => {
+    if (user.$id) {
+      getUserVideos(user.$id)
+    }
+  }, [user.$id]))
 
   const logout = async () => {
     await signOut()
